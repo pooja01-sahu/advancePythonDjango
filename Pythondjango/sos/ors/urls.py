@@ -30,4 +30,5 @@ urlpatterns = [
     path('userlist/',views.user_list),
     path('marksheet/',views.show_marksheet),
     path('adduser/',views.add_user),
+    path('delete/<int:id>/', views.delete_user),
 ]

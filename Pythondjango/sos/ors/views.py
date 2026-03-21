@@ -94,7 +94,23 @@ def user_list(request):
     params = {}
     params['pageNo'] = 1
     params['pageSize'] = 5
+
+    if request.method == "POST":
+        if request.POST['operation'] == "next":
+            params['pageNo'] = int(request.POST['pageNo'])
+            params['pageNo'] += 1
+        if request.POST['operation'] == "previous":
+            params['pageNo'] = int(request.POST['pageNo'])
+            params['pageNo'] -= 1
+        if request.POST['operation'] == "search":
+            params['firstName'] = request.POST['firstName']
+
     service = UserService()
     list = service.search(params)
     index = (params['pageNo'] - 1) * 5
     return render(request, "userlist.html", {"list": list, 'pageNo': params['pageNo'], 'index': index})
+
+def delete_user(request, id=0):
+    service = UserService()
+    service.delete(id)
+    return redirect("/ors/userlist/")
