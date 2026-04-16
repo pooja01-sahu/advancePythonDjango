@@ -118,7 +118,7 @@ class UserCtl(BaseCtl):
                 self.form['error'] = True
 
         if (DataValidator.isNull(self.form['roleId'])):
-            inputError['roleId'] = "Role Name is required"
+            inputError['roleId'] = "Role id is required"
             self.form['error'] = True
 
         return self.form['error']
@@ -153,13 +153,13 @@ class UserCtl(BaseCtl):
             if duplicate.count() > 0:
                 self.form['error'] = True
                 self.form['message'] = "Login Id already exist"
-                res = render(request, self.get_template(), {'form': self.form, 'roleList': self.dynamic_preload})
+                res = render(request, self.get_template(), {'form': self.form})
             else:
                 user = self.form_to_model(User())
                 self.get_service().save(user)
                 self.form['error'] = False
                 self.form['message'] = "User added successfully"
-                res = render(request, self.get_template(), {'form': self.form, 'roleList': self.dynamic_preload})
+                res = render(request, self.get_template(), {'form': self.form})
         return res
 
     def get_template(self):
