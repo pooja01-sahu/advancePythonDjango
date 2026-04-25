@@ -25,6 +25,8 @@ from .ctl.StudentCtl import StudentCtl
 from .ctl.StudentListCtl import StudentListCtl
 from .ctl.TimeTableCtl import TimeTableCtl
 from .ctl.TimeTableListCtl import TimeTableListCtl
+from .ctl.ChangePasswordCtl import ChangePasswordCtl
+from .ctl.ForgetPasswordCtl import ForgetPasswordCtl
 
 
 

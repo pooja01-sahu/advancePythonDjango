@@ -3,6 +3,8 @@ from .BaseCtl import BaseCtl
 from ..utility.DataValidator import DataValidator
 from ..models import User
 from ..service.UserService import UserService
+from ..service.EmailMessege import EmailMessege
+from ..service.EmailService import EmailService
 
 
 class RegistrationCtl(BaseCtl):
@@ -106,8 +108,35 @@ class RegistrationCtl(BaseCtl):
         res = render(request, self.get_template(), {"form": self.form})
         return res
 
+
+
     def submit(self, request, params={}):
-        res = render(request, self.get_template(), {'form': self.form})
+        duplicate = self.get_service().get_model().objects.filter(loginId=self.form['loginId'])
+        if duplicate.count() > 0:
+            self.form['error'] = True
+            self.form['message'] = "Login Id already exist"
+            res = render(request, self.get_template(), {'form': self.form})
+        else:
+            emailMessege = EmailMessege()
+            emailMessege.to = [self.form['loginId']]
+            emailMessege.subject = "ORS Registration Successful"
+
+            e = {}
+            e['loginId'] = self.form['loginId']
+            e['password'] = self.form['password']
+
+            mailResponse = EmailService.send(emailMessege, 'signUp', e)
+
+            if mailResponse == 1:
+                r = self.form_to_model(User())
+                self.get_service().save(r)
+                self.form['error'] = False
+                self.form['message'] = "User Registration successfully..!!"
+                res = render(request, self.get_template(), {'form': self.form})
+            else:
+                self.form['error'] = True
+                self.form['message'] = "Please Check Your Internet Connection"
+                res = render(request, self.get_template(), {'form': self.form})
         return res
 
     def get_template(self):
